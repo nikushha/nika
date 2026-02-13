@@ -1,0 +1,172 @@
+(<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You ❤️</title>
+
+<style>
+body{
+margin:0;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+background:#ffd9e6;
+font-family:Arial, sans-serif;
+}
+
+.card{
+background:white;
+padding:25px;
+border-radius:20px;
+text-align:center;
+width:320px;
+box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+
+img{
+width:100%;
+border-radius:14px;
+margin-bottom:15px;
+}
+
+h1{
+color:#d6336c;
+font-size:22px;
+margin-bottom:10px;
+}
+
+#message{
+height:24px;
+color:#b03060;
+font-weight:bold;
+margin-bottom:15px;
+}
+
+.buttons{
+position:relative;
+height:140px;
+}
+
+button{
+border:none;
+padding:14px 22px;
+font-size:18px;
+border-radius:12px;
+cursor:pointer;
+position:absolute;
+transition:transform 0.2s ease, top 0.25s ease, left 0.25s ease;
+}
+
+#yes{
+background:#4CAF50;
+color:white;
+left:65%;
+top:70px;
+transform:translate(-50%, -50%);
+z-index:2;
+}
+
+#no{
+background:#ff4d6d;
+color:white;
+left:30%;
+top:70px;
+transform:translate(-50%, -50%);
+z-index:1;
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+<img src="photo.jpg" alt="us">
+<h1>Will you be my Valentine? 💖</h1>
+<div id="message"></div>
+
+<div class="buttons">
+<button id="yes">Yes</button>
+<button id="no">No</button>
+</div>
+</div>
+
+<script>
+const noBtn = document.getElementById("no");
+const yesBtn = document.getElementById("yes");
+const message = document.getElementById("message");
+const area = document.querySelector(".buttons");
+
+const texts = [
+"ქეთი გაილახები",
+"კიდე მაწვალებ?",
+"გოგოოო",
+"დაფიქრდი გეუბნები"
+];
+
+let yesScale = 1;
+
+function isOverlapping(x, y){
+const yesRect = yesBtn.getBoundingClientRect();
+const areaRect = area.getBoundingClientRect();
+
+const noLeft = areaRect.left + x;
+const noTop = areaRect.top + y;
+
+const buffer = 20; // distance gap
+
+return !(
+noLeft + noBtn.offsetWidth + buffer < yesRect.left ||
+noLeft > yesRect.right + buffer ||
+noTop + noBtn.offsetHeight + buffer < yesRect.top ||
+noTop > yesRect.bottom + buffer
+);
+}
+
+function moveNo(){
+const rect = area.getBoundingClientRect();
+const maxX = rect.width - noBtn.offsetWidth;
+const maxY = rect.height - noBtn.offsetHeight;
+
+let newX, newY;
+let attempts = 0;
+
+do{
+newX = Math.random() * maxX;
+newY = Math.random() * maxY;
+attempts++;
+} while(isOverlapping(newX, newY) && attempts < 50);
+
+noBtn.style.left = newX + "px";
+noBtn.style.top = newY + "px";
+
+message.textContent =
+texts[Math.floor(Math.random()*texts.length)];
+
+yesScale += 0.15;
+yesBtn.style.transform = `translate(-50%, -50%) scale(${yesScale})`;
+}
+
+noBtn.addEventListener("touchstart", moveNo);
+noBtn.addEventListener("mouseover", moveNo);
+
+yesBtn.addEventListener("click", () => {
+document.body.innerHTML = `
+<div style="
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+font-family:Arial;
+color:#d6336c;
+padding:25px;
+gap:20px;
+">
+<img src="finalphoto.jpg" style="width:220px;border-radius:16px;">
+
+<h1>რა თქმა უნდა, იქნები. სიცოცხლის ბოლომდე ჩემი ხარ სიყვარულო ❤️</h1>
+</div>
+`;
+});
